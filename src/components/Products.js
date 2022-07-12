@@ -1,39 +1,32 @@
 import React from "react";
 import OrderBy from "./OrderBy";
+import { connect } from 'react-redux';
 
 class Products extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedOrder: "",
-    };
-  }
+
   handleOrderBy = (event) => {
-    this.setState({ selectedOrder: event.target.value });
+    this.props.dispatch({
+      type: 'selectedOrder',
+      value: event.target.value
+    });
   };
 
-  handleOrderProducts = (order, products) => {
-    let sortedProducts = [...products];
-    if (order === "highest") {
-      sortedProducts = sortedProducts.sort((a, b) => b.price - a.price);
-    }
-    if (order === "lowest") {
-      sortedProducts = sortedProducts.sort((a, b) => a.price - b.price);
-    }
-    return sortedProducts;
+  handleOrderProducts = () => {
+    this.props.dispatch({
+      type: 'sortProduct',
+    });
   };
 
   render() {
-    let { selectedOrder } = this.state;
-    let products = this.handleOrderProducts(selectedOrder, this.props.data);
+    let { selectedOrder } = this.props;
 
     return (
       <div>
         <div className="products-filter">
           <p>
-            {`${this.props.data.length} Product${
-              this.props.data.length > 1 ? "s" : ""
-            } found.`}{" "}
+            {`${this.props.data.length} 
+            Product${this.props.data.length > 1 ? "s" : ""
+              } found.`}{" "}
           </p>
           <OrderBy
             selectedOrder={selectedOrder}
@@ -41,7 +34,7 @@ class Products extends React.Component {
           />
         </div>
         <div className="flex wrap">
-          {products.map((product) => (
+          {this.props.sortedProducts.map((product) => (
             <Product {...product} />
           ))}
         </div>
@@ -70,4 +63,12 @@ function Product(props) {
     </div>
   );
 }
-export default Products;
+
+function mapStateToProps(state) {
+  return {
+    selectedOrder: state.selectedOrder,
+    sortedProducts: state.sortedProducts
+  }
+}
+
+export default connect(mapStateToProps)(Products);

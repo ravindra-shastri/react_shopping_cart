@@ -7,8 +7,8 @@ function Sidebar({ products }) {
   return (
     <aside className="flex-20 sidebar">
       <div className="flex wrap">
-        {uniqueSizes.map((size) => (
-          <span className="size">{size}</span>
+        {uniqueSizes.map((size, index) => (
+          <span className="size" key={index}>{size}</span>
         ))}
       </div>
     </aside>
